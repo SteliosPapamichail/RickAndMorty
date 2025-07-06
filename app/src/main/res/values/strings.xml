@@ -1,3 +1,25 @@
 <resources>
     <string name="app_name">RickAndMorty</string>
+    <string name="aired_on">Aired On %1$s</string>
+    <string name="last_updated_on">Last updated on %1$s</string>
+    <string name="character_image_content_desc">Character Image</string>
+    <plurals name="appears_in_episodes">
+        <item quantity="one">Appears in %1$s episode</item>
+        <item quantity="other">Appears in %1$s episodes</item>
+    </plurals>
+    <string name="character_origin_label">Origin</string>
+    <string name="character_location_label">Location</string>
+    <string name="character_info_export_btn_label">Export to file</string>
+    <string name="character_trait_type_label">Type</string>
+    <string name="character_trait_gender_label">Gender</string>
+    <string name="character_trait_status_label">Status</string>
+    <string name="character_trait_species_label">Species</string>
+    <string name="episde_characters_count_label">Characters (%1$s)</string>
+    <string name="file_save_error">Failed to save file in the selected directory.</string>
+    <string name="character_details_export_failure">Could not export character</string>
+    <string name="character_details_export_success">Character info exported successfully!</string>
+    <string name="navigate_back_content_desc">Navigate Back</string>
+    <string name="episodes_overview_title">Episodes</string>
+    <string name="episode_details_title">Episode Details</string>
+    <string name="character_details_title">Character Details</string>
 </resources>
