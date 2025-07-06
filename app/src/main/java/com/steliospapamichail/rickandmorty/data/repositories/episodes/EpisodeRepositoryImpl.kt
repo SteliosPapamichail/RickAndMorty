@@ -39,6 +39,6 @@ class EpisodeRepositoryImpl(
     }
 
     override suspend fun getMultipleEpisodes(episodeIds: Array<Int>): Result<List<Episode>> {
-        TODO("Not yet implemented")
+        TODO("Not yet implemented based on requirements")
     }
 }

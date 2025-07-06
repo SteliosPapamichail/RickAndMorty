@@ -8,8 +8,10 @@ import com.steliospapamichail.rickandmorty.data.repositories.characters.Characte
 import com.steliospapamichail.rickandmorty.data.repositories.episodes.EpisodeRepository
 import com.steliospapamichail.rickandmorty.data.repositories.episodes.EpisodeRepositoryImpl
 import com.steliospapamichail.rickandmorty.data.sources.local.db.AppDatabase
+import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.characters.CharacterDao
 import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.episodes.EpisodeDao
 import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.episodes.EpisodePageKeysDao
+import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.locations.LocationDao
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.CharacterService
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.EpisodeService
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.LocationService
@@ -44,6 +46,8 @@ val appModule = module {
     }
     single<EpisodeDao> { get<AppDatabase>().episodeDao() }
     single<EpisodePageKeysDao> { get<AppDatabase>().episodePageKeysDao() }
+    single<CharacterDao> { get<AppDatabase>().characterDao() }
+    single<LocationDao> { get<AppDatabase>().locationDao() }
 
     // paging
     singleOf(::EpisodeRemoteMediator)
@@ -53,7 +57,7 @@ val appModule = module {
 
     // Repositories
     single<EpisodeRepository> { EpisodeRepositoryImpl(get(), get()) }
-    single<CharacterRepository> { CharacterRepositoryImpl(get()) }
+    single<CharacterRepository> { CharacterRepositoryImpl(get(), get(), get(named("ioDispatcher"))) }
 
     // use cases
     single { ExportCharacterUseCase(get()) }

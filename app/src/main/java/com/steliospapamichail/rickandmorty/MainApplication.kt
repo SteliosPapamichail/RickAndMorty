@@ -53,11 +53,11 @@ class MainApplication : Application(), Configuration.Provider {
         val syncWorkRequest = PeriodicWorkRequestBuilder<UpdateEpisodeListWorker>(30, TimeUnit.MINUTES)
             .setConstraints(syncConstraints)
             .addTag(BackgroundWorkTags.DATA_SYNC)
-            .setBackoffCriteria(BackoffPolicy.LINEAR, 1, TimeUnit.MINUTES)
+            .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
             .build()
         WorkManager.getInstance(this).enqueueUniquePeriodicWork(
             DATA_SYNC_UNIQUE_NAME,
-            ExistingPeriodicWorkPolicy.UPDATE, //todo:sp change back to kEEP after validating
+            ExistingPeriodicWorkPolicy.KEEP,
             syncWorkRequest
         )
 

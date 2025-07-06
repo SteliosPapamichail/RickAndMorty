@@ -16,11 +16,11 @@ class DocumentExporter(
      * @throws IOException When the given Uri's FileDescriptor could
      * not be retrieved or used.
      */
-    override suspend fun export(uri: Uri, data: ByteArray) = withContext(coroutineDispatcher) {
+    override suspend fun export(uri: Uri, data: ByteArray): Unit = withContext(coroutineDispatcher) {
         contentResolver.openFileDescriptor(uri, "w")?.use { ostream ->
             FileOutputStream(ostream.fileDescriptor).use {
                 it.write(data)
             }
-        } ?: throw IOException("Unable to open URI for writing: $uri")
+        }
     }
 }

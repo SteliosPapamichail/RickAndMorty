@@ -3,6 +3,7 @@ package com.steliospapamichail.rickandmorty.domain.usecases
 import android.net.Uri
 import com.steliospapamichail.rickandmorty.domain.exporters.DocumentExporter
 import com.steliospapamichail.rickandmorty.domain.models.characters.CharacterDetails
+import java.io.FileNotFoundException
 import java.io.IOException
 
 class ExportCharacterUseCase(
@@ -16,8 +17,10 @@ class ExportCharacterUseCase(
             Result.success(Unit)
         } catch (ioEx: IOException) {
             Result.failure(ioEx)
-        } catch (iaEx: IllegalArgumentException) {
-            Result.failure(iaEx)
+        } catch (fileNotFoundEx : FileNotFoundException) {
+            Result.failure(fileNotFoundEx)
+        } catch (secEx : SecurityException) {
+            Result.failure(secEx)
         }
     }
 }

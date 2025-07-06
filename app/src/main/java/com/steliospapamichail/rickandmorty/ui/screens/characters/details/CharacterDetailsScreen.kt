@@ -21,7 +21,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
@@ -41,6 +40,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.steliospapamichail.rickandmorty.R
 import com.steliospapamichail.rickandmorty.extensions.showToast
+import com.steliospapamichail.rickandmorty.ui.components.CircularLoader
+import com.steliospapamichail.rickandmorty.ui.components.ErrorSection
 import com.steliospapamichail.rickandmorty.utils.FileExtensions
 import com.steliospapamichail.rickandmorty.utils.MimeTypes
 import org.koin.androidx.compose.koinViewModel
@@ -66,6 +67,7 @@ fun CharacterDetailsScreen(modifier: Modifier = Modifier, viewModel: CharacterDe
         viewModel.fetchCharacterDetails(charId)
     }
 
+    //todo:sp confirm this doesn't re-run a collector on orientation change for example
     LaunchedEffect(uiEvents) {
         uiEvents.collect { event ->
             when (event) {
@@ -75,23 +77,14 @@ fun CharacterDetailsScreen(modifier: Modifier = Modifier, viewModel: CharacterDe
         }
     }
 
-    // reason for 'state' declaration: allows the compiler to perform automatic smart casting, another approach is to just cast manually and use that instance
+    //note: reason for 'state' declaration: allows the compiler to perform automatic smart casting, another approach is to just cast manually and use that instance
     when (val state = uiState) {
         is CharacterDetailsUIState.Loading -> {
-            Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            CircularLoader(modifier)
         }
 
         is CharacterDetailsUIState.Error -> {
-            Box(modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    state.msg,
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    style = MaterialTheme.typography.headlineLarge
-                )
-            }
+            ErrorSection(modifier, state.msg)
         }
 
         is CharacterDetailsUIState.Success -> {
@@ -103,20 +96,11 @@ fun CharacterDetailsScreen(modifier: Modifier = Modifier, viewModel: CharacterDe
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                AsyncImage(
-                    model = state.details.imageUrl,
-                    contentDescription = stringResource(R.string.character_image_content_desc),
-                    modifier = Modifier
-                        .size(92.dp)
-                        .clip(CircleShape)
+                CharacterInfoHeader(
+                    imageUrl = state.details.imageUrl,
+                    name = state.details.name,
+                    episodesCount = state.details.episodesCount
                 )
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    text = state.details.name,
-                    style = MaterialTheme.typography.headlineLarge,
-                    textAlign = TextAlign.Center
-                )
-                Text(text = pluralStringResource(R.plurals.appears_in_episodes, state.details.episodesCount, state.details.episodesCount))
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(16.dp)
@@ -142,8 +126,15 @@ fun CharacterDetailsScreen(modifier: Modifier = Modifier, viewModel: CharacterDe
                         trait = state.details.species
                     )
                 }
-                CharacterLocation(label = stringResource(R.string.character_origin_label), location = state.details.origin.name)
-                CharacterLocation(label = stringResource(R.string.character_location_label), location = state.details.location.name)
+                state.details.origin?.let {
+                    CharacterLocation(label = stringResource(R.string.character_origin_label), location = it.name)
+                }
+                state.details.location?.let {
+                    CharacterLocation(
+                        label = stringResource(R.string.character_location_label),
+                        location = it.name
+                    )
+                }
                 Spacer(modifier = Modifier.weight(1f))
                 OutlinedButton(
                     modifier = Modifier.fillMaxWidth(),
@@ -156,6 +147,24 @@ fun CharacterDetailsScreen(modifier: Modifier = Modifier, viewModel: CharacterDe
             }
         }
     }
+}
+
+@Composable
+private fun CharacterInfoHeader(imageUrl: String, name: String, episodesCount: Int) {
+    AsyncImage(
+        model = imageUrl,
+        contentDescription = stringResource(R.string.character_image_content_desc),
+        modifier = Modifier
+            .size(92.dp)
+            .clip(CircleShape)
+    )
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        text = name,
+        style = MaterialTheme.typography.headlineLarge,
+        textAlign = TextAlign.Center
+    )
+    Text(text = pluralStringResource(R.plurals.appears_in_episodes, episodesCount, episodesCount))
 }
 
 @Composable

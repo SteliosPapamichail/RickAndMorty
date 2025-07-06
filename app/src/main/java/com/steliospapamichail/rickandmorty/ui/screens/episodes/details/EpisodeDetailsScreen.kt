@@ -16,7 +16,6 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -31,6 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.steliospapamichail.rickandmorty.R
 import com.steliospapamichail.rickandmorty.domain.models.episodes.EpisodeDetails
+import com.steliospapamichail.rickandmorty.ui.components.CircularLoader
+import com.steliospapamichail.rickandmorty.ui.components.ErrorSection
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -46,17 +47,15 @@ fun EpisodeDetailsScreen(
         viewModel.fetchEpisodeDetails(episodeId)
     }
 
-    when(val state = uiState) {
+    when (val state = uiState) {
         is EpisodeDetailsUIState.Error -> {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(text = state.msg)
-            }
+            ErrorSection(errorMsg = state.msg)
         }
+
         EpisodeDetailsUIState.Loading -> {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                CircularProgressIndicator()
-            }
+            CircularLoader()
         }
+
         is EpisodeDetailsUIState.Success -> {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(4),
@@ -70,22 +69,7 @@ fun EpisodeDetailsScreen(
                     EpisodeInfoHeader(episodeDetails = state.details)
                 }
                 items(state.details.characterIds) { id ->
-                    Box(
-                        contentAlignment = Alignment.Center,
-                        modifier = Modifier
-                            .size(48.dp)
-                            .background(
-                                color = MaterialTheme.colorScheme.primaryContainer,
-                                shape = CircleShape
-                            )
-                            .clickable { onCharacterSelected(id) }
-                    ) {
-                        Text(
-                            text = id.toString(),
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
-                        )
-                    }
+                    CharacterPreview(id, onCharacterSelected)
                 }
             }
         }
@@ -93,10 +77,29 @@ fun EpisodeDetailsScreen(
 }
 
 @Composable
+private fun CharacterPreview(id: Int, onCharacterSelected: (Int) -> Unit) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .size(48.dp)
+            .background(
+                color = MaterialTheme.colorScheme.primaryContainer,
+                shape = CircleShape
+            )
+            .clickable { onCharacterSelected(id) }
+    ) {
+        Text(
+            text = id.toString(),
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onPrimaryContainer
+        )
+    }
+}
+
+@Composable
 private fun EpisodeInfoHeader(modifier: Modifier = Modifier, episodeDetails: EpisodeDetails) {
     Column(modifier = modifier, horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(12.dp)) {
         Box(
-            //todo:sp extract to reusable component
             modifier = Modifier
                 .wrapContentWidth()
                 .height(150.dp)

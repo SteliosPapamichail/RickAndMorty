@@ -18,11 +18,11 @@ data class EpisodeCharacter(
     @SerialName("image")
     val image: String,
     @SerialName("location")
-    val location: EpisodeLocationPreview,
+    val location: EpisodeLocationPreview?,
     @SerialName("name")
     val name: String,
     @SerialName("origin")
-    val origin: EpisodeLocationPreview,
+    val origin: EpisodeLocationPreview?,
     @SerialName("species")
     val species: String,
     @SerialName("status")

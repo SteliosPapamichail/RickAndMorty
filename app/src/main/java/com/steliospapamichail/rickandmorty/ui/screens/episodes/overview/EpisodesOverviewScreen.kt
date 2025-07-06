@@ -38,6 +38,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.steliospapamichail.rickandmorty.R
+import com.steliospapamichail.rickandmorty.ui.components.CircularLoader
 import com.steliospapamichail.rickandmorty.ui.screens.episodes.components.EpisodePreviewItem
 import org.koin.androidx.compose.koinViewModel
 
@@ -69,7 +70,7 @@ fun EpisodesOverviewScreen(
         modifier = Modifier.fillMaxSize()
     ) {
         if (episodeItems.loadState.refresh is LoadState.Loading) {
-            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            CircularLoader()
         } else {
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 LazyVerticalGrid(

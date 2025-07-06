@@ -9,8 +9,8 @@ data class CharacterDetails(
     val species: String,
     val type: String,
     val gender: String,
-    val origin: LocationPreview,
-    val location: LocationPreview,
+    val origin: LocationPreview?,
+    val location: LocationPreview?,
     val imageUrl: String,
     val episodesCount: Int,
 ) {

@@ -5,12 +5,16 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.steliospapamichail.rickandmorty.R
+import com.steliospapamichail.rickandmorty.data.models.common.Resource
 import com.steliospapamichail.rickandmorty.data.repositories.characters.CharacterRepository
 import com.steliospapamichail.rickandmorty.domain.usecases.ExportCharacterUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.launchIn
+import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
 
 class CharacterDetailsViewModel(
@@ -23,15 +27,19 @@ class CharacterDetailsViewModel(
     val uiEvents = _uiEvents.asSharedFlow()
 
     fun fetchCharacterDetails(charId: Int) {
-        _uiState.value = CharacterDetailsUIState.Loading
         viewModelScope.launch {
-            characterRepository.getCharacterDetails(charId)
-                .onSuccess {
-                    _uiState.value = CharacterDetailsUIState.Success(it)
+            characterRepository.getCharacterDetailsAsFlow(charId)
+                .onEach { resource ->
+                    _uiState.value = when (resource) {
+                        is Resource.Error -> CharacterDetailsUIState.Error(resource.throwable.message.toString())
+                        Resource.Loading -> CharacterDetailsUIState.Loading
+                        is Resource.Success -> CharacterDetailsUIState.Success(resource.data)
+                    }
                 }
-                .onFailure {
-                    _uiState.value = CharacterDetailsUIState.Error(it.message.toString())
+                .catch { e ->
+                    _uiState.value = CharacterDetailsUIState.Error(e.message.toString())
                 }
+                .launchIn(viewModelScope)
         }
     }
 
