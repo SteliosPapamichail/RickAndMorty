@@ -1,44 +1,91 @@
 package com.steliospapamichail.rickandmorty.data.repositories.episodes
 
+import android.util.Log
 import androidx.paging.PagingSource
 import com.steliospapamichail.rickandmorty.data.mappers.toDomainModel
+import com.steliospapamichail.rickandmorty.data.models.common.Resource
 import com.steliospapamichail.rickandmorty.data.models.dtos.episodes.Episode
-import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.episodes.EpisodeDao
+import com.steliospapamichail.rickandmorty.data.sources.local.db.AppDatabase
+import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodeDetailsEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePreviewEntity
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.EpisodeService
-import com.steliospapamichail.rickandmorty.exceptions.InvalidPayloadException
-import com.steliospapamichail.rickandmorty.exceptions.NetworkRequestException
 import com.steliospapamichail.rickandmorty.domain.models.episodes.EpisodeDetails
-import retrofit2.HttpException
-import java.io.IOException
+import com.steliospapamichail.rickandmorty.exceptions.NetworkRequestException
+import com.steliospapamichail.rickandmorty.utils.DbRecordTTL.RECORD_TTL
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.FlowCollector
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.datetime.Clock
 
 class EpisodeRepositoryImpl(
-    private val episodeDao: EpisodeDao,
+    private val db: AppDatabase,
     private val episodeService: EpisodeService,
+    private val ioDispatcher: CoroutineDispatcher,
 ) : EpisodeRepository {
     override fun getAllEpisodes(filters: Map<String, String>): PagingSource<Int, EpisodePreviewEntity> {
-        return episodeDao.pagingSource()
+        return db.episodeDao().pagingSource()
     }
 
-    override suspend fun getEpisodeDetails(episodeId: Int): Result<EpisodeDetails> {
-        return try {
+    override suspend fun getEpisodeDetailsAsFlow(episodeId: Int): Flow<Resource<EpisodeDetails>> = flow {
+        emit(Resource.Loading)
+        debugLog("Loading episode info for episode id $episodeId")
+        val episodeDetails = db.episodeDetailsDao().getEpisodeDetailsFlow(episodeId).firstOrNull()
+
+        val now = Clock.System.now().toEpochMilliseconds()
+        if (episodeDetails != null && now < episodeDetails.expiresAt) {
+            debugLog("Cache hit, returning fresh data")
+            emit(Resource.Success(episodeDetails.toDomainModel()))
+            return@flow
+        }
+
+        debugLog("Cache miss, fetching from network")
+        fetchAndPersistEpisodeDetails(episodeId, episodeDetails)
+    }.flowOn(ioDispatcher)
+
+    private suspend fun FlowCollector<Resource<EpisodeDetails>>.fetchAndPersistEpisodeDetails(
+        episodeId: Int,
+        localEpisodeDetails: EpisodeDetailsEntity?,
+    ) {
+        try {
             val response = episodeService.getEpisodeDetails(episodeId)
-            val hasPayload = response.body() != null
-            if (response.isSuccessful && hasPayload) {
-                Result.success(response.body()!!.toDomainModel())
-            } else if (!hasPayload) {
-                Result.failure(InvalidPayloadException())
-            } else {
-                Result.failure(NetworkRequestException(response.errorBody().toString()))
+
+            if (!response.isSuccessful || response.body() == null) {
+                debugLog("Network request failed or response was invalid")
+                emit(Resource.Error(NetworkRequestException("Failed to update episode info")))
+                return
             }
-        } catch (ioEx: IOException) {
-            Result.failure(ioEx)
-        } catch (httpEx: HttpException) {
-            Result.failure(httpEx)
+
+            val expiresAt = Clock.System.now().toEpochMilliseconds() + RECORD_TTL
+            val remoteEpisodeDetails = EpisodeDetailsEntity.fromDto(response.body()!!, expiresAt)
+            debugLog("persisting episode details in DB")
+            db.episodeDetailsDao().upsertEpisodeDetails(remoteEpisodeDetails)
+            val updatedDetails = db.episodeDetailsDao()
+                .getEpisodeDetailsFlow(episodeId)
+                .first()!!
+                .toDomainModel()
+            emit(Resource.Success(updatedDetails))
+        } catch (t: Throwable) {
+            debugLog("Unknown error occurred")
+            if (localEpisodeDetails != null) {
+                debugLog("Returning stale data")
+                val staleEpisodeDetails = localEpisodeDetails.toDomainModel()
+                emit(Resource.Success(staleEpisodeDetails))
+            } else {
+                debugLog("Emitting error")
+                emit(Resource.Error(t))
+            }
         }
     }
 
     override suspend fun getMultipleEpisodes(episodeIds: Array<Int>): Result<List<Episode>> {
         TODO("Not yet implemented based on requirements")
+    }
+
+    private fun debugLog(msg: String) {
+        Log.d(EpisodeRepository::class.simpleName, msg)
     }
 }

@@ -67,7 +67,6 @@ fun CharacterDetailsScreen(modifier: Modifier = Modifier, viewModel: CharacterDe
         viewModel.fetchCharacterDetails(charId)
     }
 
-    //todo:sp confirm this doesn't re-run a collector on orientation change for example
     LaunchedEffect(uiEvents) {
         uiEvents.collect { event ->
             when (event) {

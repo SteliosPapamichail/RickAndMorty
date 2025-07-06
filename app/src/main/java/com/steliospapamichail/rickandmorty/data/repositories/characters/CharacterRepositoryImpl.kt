@@ -10,6 +10,7 @@ import com.steliospapamichail.rickandmorty.data.sources.local.db.relationships.C
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.CharacterService
 import com.steliospapamichail.rickandmorty.domain.models.characters.CharacterDetails
 import com.steliospapamichail.rickandmorty.exceptions.NetworkRequestException
+import com.steliospapamichail.rickandmorty.utils.DbRecordTTL.RECORD_TTL
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.FlowCollector
@@ -17,9 +18,6 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.datetime.Clock
-import java.util.concurrent.TimeUnit
-
-private val RECORD_TTL = TimeUnit.MINUTES.toMillis(5)
 
 class CharacterRepositoryImpl(
     private val characterService: CharacterService,
@@ -29,7 +27,7 @@ class CharacterRepositoryImpl(
 
     override suspend fun getCharacterDetailsAsFlow(charId: Int): Flow<Resource<CharacterDetails>> = flow {
         emit(Resource.Loading)
-        debugLog("Loading character info for $charId")
+        debugLog("Loading character info for char id $charId")
         val characterWithLocations = db.characterDao().getCharacterWithLocationsFlow(charId).firstOrNull()
         val now = Clock.System.now().toEpochMilliseconds()
         if (characterWithLocations != null && now < characterWithLocations.character.expiresAt) {
@@ -39,10 +37,10 @@ class CharacterRepositoryImpl(
         }
 
         debugLog("Cache miss, fetching from network")
-        fetchAndPersist(charId, characterWithLocations)
+        fetchAndPersistCharacterDetails(charId, characterWithLocations)
     }.flowOn(ioDispatcher)
 
-    private suspend fun FlowCollector<Resource<CharacterDetails>>.fetchAndPersist(
+    private suspend fun FlowCollector<Resource<CharacterDetails>>.fetchAndPersistCharacterDetails(
         charId: Int,
         characterWithLocations: CharacterWithLocations?,
     ) {

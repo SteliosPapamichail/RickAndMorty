@@ -1,5 +1,7 @@
 package com.steliospapamichail.rickandmorty.utils
 
+import java.util.concurrent.TimeUnit
+
 object Consts {
     const val NOT_AVAILABLE = "N/A"
 }
@@ -16,4 +18,8 @@ object MimeTypes {
 
 object BackgroundWorkTags {
     const val DATA_SYNC = "dataSync"
+}
+
+object DbRecordTTL {
+    val RECORD_TTL = TimeUnit.MINUTES.toMillis(5)
 }
