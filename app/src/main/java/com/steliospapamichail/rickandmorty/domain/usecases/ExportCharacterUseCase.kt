@@ -8,7 +8,7 @@ import java.io.IOException
 class ExportCharacterUseCase(
     private val documentExporter: DocumentExporter,
 ) {
-    //note: I'm not a fun of overriding the invoke operator as imo, it doesn't communicate the execution intent
+    //note: I'm not a fan of overriding the invoke operator as imo, it doesn't communicate the execution intent
     suspend fun execute(destinationUri: Uri, characterDetails: CharacterDetails): Result<Unit> {
         return try {
             val charDetailsBytes = characterDetails.toString().toByteArray()
