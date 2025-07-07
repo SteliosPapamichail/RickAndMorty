@@ -31,21 +31,26 @@ class UpdateEpisodeListWorker(appContext: Context, workerParameters: WorkerParam
 
                 if (response.isSuccessful) {
                     val episodes = response.body()?.episodes ?: return@withContext Result.retry()
-
+                    debugLog("Episodes from response are $episodes")
                     db.withTransaction {
                         episodeDao.deleteByPage(pageNumber)
                         episodeDao.insertAll(episodes.map { EpisodePreviewEntity.fromDto(it, pageNumber) })
                     }
+                    debugLog("Episodes persisted in DB")
                 } else {
+                    debugLog("Network request failed, retrying based on policy")
                     return@withContext Result.retry()
                 }
             }
         } catch (ioEx: IOException) {
+            debugLog(ioEx.message.toString())
             return@withContext Result.retry()
         } catch (t: Throwable) {
+            debugLog(t.message.toString())
             return@withContext Result.failure()
         }
 
+        debugLog("data sync succeeded!")
         return@withContext Result.success()
     }
 
