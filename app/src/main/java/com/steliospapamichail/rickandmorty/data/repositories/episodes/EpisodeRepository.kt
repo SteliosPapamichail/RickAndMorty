@@ -10,5 +10,4 @@ import kotlinx.coroutines.flow.Flow
 interface EpisodeRepository {
     fun getAllEpisodes(filters: Map<String,String> = emptyMap()) : PagingSource<Int, EpisodePreviewEntity>
     suspend fun getEpisodeDetailsAsFlow(episodeId:Int) : Flow<Resource<EpisodeDetails>>
-    suspend fun getMultipleEpisodes(episodeIds:Array<Int>) : Result<List<Episode>>
 }

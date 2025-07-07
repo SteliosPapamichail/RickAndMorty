@@ -19,9 +19,4 @@ interface EpisodeService {
     suspend fun getEpisodeDetails(
         @Path("id") episodeId: Int,
     ): Response<Episode>
-
-    @GET("episode/{ids}")
-    suspend fun getMultipleEpisodesDetails(
-        @Path("ids") episodeIds: Array<Int>,
-    ): Response<List<Episode>>
 }

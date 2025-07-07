@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.paging.PagingSource
 import com.steliospapamichail.rickandmorty.data.mappers.toDomainModel
 import com.steliospapamichail.rickandmorty.data.models.common.Resource
-import com.steliospapamichail.rickandmorty.data.models.dtos.episodes.Episode
 import com.steliospapamichail.rickandmorty.data.sources.local.db.AppDatabase
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodeDetailsEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePreviewEntity
@@ -79,10 +78,6 @@ class EpisodeRepositoryImpl(
                 emit(Resource.Error(t))
             }
         }
-    }
-
-    override suspend fun getMultipleEpisodes(episodeIds: Array<Int>): Result<List<Episode>> {
-        TODO("Not yet implemented based on requirements")
     }
 
     private fun debugLog(msg: String) {
