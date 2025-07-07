@@ -3,9 +3,9 @@ package com.steliospapamichail.rickandmorty.di
 import androidx.room.Room
 import com.steliospapamichail.rickandmorty.data.mediators.EpisodeRemoteMediator
 import com.steliospapamichail.rickandmorty.data.networking.client.RetrofitClient
-import com.steliospapamichail.rickandmorty.data.repositories.characters.CharacterRepository
+import com.steliospapamichail.rickandmorty.domain.repositories.character.CharacterRepository
 import com.steliospapamichail.rickandmorty.data.repositories.characters.CharacterRepositoryImpl
-import com.steliospapamichail.rickandmorty.data.repositories.episodes.EpisodeRepository
+import com.steliospapamichail.rickandmorty.domain.repositories.episode.EpisodeRepository
 import com.steliospapamichail.rickandmorty.data.repositories.episodes.EpisodeRepositoryImpl
 import com.steliospapamichail.rickandmorty.data.sources.local.db.AppDatabase
 import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.characters.CharacterDao
@@ -16,7 +16,7 @@ import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.locations.
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.CharacterService
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.EpisodeService
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.LocationService
-import com.steliospapamichail.rickandmorty.domain.exporters.DocumentExporter
+import com.steliospapamichail.rickandmorty.data.exporters.DocumentExporter
 import com.steliospapamichail.rickandmorty.domain.usecases.ExportCharacterUseCase
 import com.steliospapamichail.rickandmorty.ui.screens.characters.details.CharacterDetailsViewModel
 import com.steliospapamichail.rickandmorty.ui.screens.episodes.details.EpisodeDetailsViewModel

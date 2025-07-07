@@ -1,4 +1,4 @@
-package com.steliospapamichail.rickandmorty.ui.components
+package com.steliospapamichail.rickandmorty.ui.shared
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

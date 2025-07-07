@@ -10,7 +10,7 @@ import androidx.paging.cachedIn
 import androidx.paging.map
 import com.steliospapamichail.rickandmorty.data.mappers.toDomainModel
 import com.steliospapamichail.rickandmorty.data.mediators.EpisodeRemoteMediator
-import com.steliospapamichail.rickandmorty.data.repositories.episodes.EpisodeRepository
+import com.steliospapamichail.rickandmorty.domain.repositories.episode.EpisodeRepository
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePreviewEntity
 import com.steliospapamichail.rickandmorty.domain.models.episodes.EpisodePreview
 import com.steliospapamichail.rickandmorty.utils.AppDataStore

@@ -1,7 +1,7 @@
 package com.steliospapamichail.rickandmorty.domain.usecases
 
 import android.net.Uri
-import com.steliospapamichail.rickandmorty.domain.exporters.DocumentExporter
+import com.steliospapamichail.rickandmorty.data.exporters.DocumentExporter
 import com.steliospapamichail.rickandmorty.domain.models.characters.CharacterDetails
 import java.io.FileNotFoundException
 import java.io.IOException

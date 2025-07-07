@@ -40,8 +40,8 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.steliospapamichail.rickandmorty.R
 import com.steliospapamichail.rickandmorty.extensions.showToast
-import com.steliospapamichail.rickandmorty.ui.components.CircularLoader
-import com.steliospapamichail.rickandmorty.ui.components.ErrorSection
+import com.steliospapamichail.rickandmorty.ui.shared.CircularLoader
+import com.steliospapamichail.rickandmorty.ui.shared.ErrorSection
 import com.steliospapamichail.rickandmorty.utils.FileExtensions
 import com.steliospapamichail.rickandmorty.utils.MimeTypes
 import org.koin.androidx.compose.koinViewModel
@@ -70,8 +70,8 @@ fun CharacterDetailsScreen(modifier: Modifier = Modifier, viewModel: CharacterDe
     LaunchedEffect(uiEvents) {
         uiEvents.collect { event ->
             when (event) {
-                is CharacterDetailsEvent.ExportError -> context.showToast(event.errorResId)
-                is CharacterDetailsEvent.ExportSuccess -> context.showToast(event.msgResId)
+                is CharacterDetailsUIEvent.ExportError -> context.showToast(event.errorResId)
+                is CharacterDetailsUIEvent.ExportSuccess -> context.showToast(event.msgResId)
             }
         }
     }

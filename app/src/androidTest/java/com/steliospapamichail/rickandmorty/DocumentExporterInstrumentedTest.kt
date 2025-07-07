@@ -5,7 +5,7 @@ import android.content.Context
 import android.net.Uri
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.steliospapamichail.rickandmorty.domain.exporters.DocumentExporter
+import com.steliospapamichail.rickandmorty.data.exporters.DocumentExporter
 import com.steliospapamichail.rickandmorty.domain.models.characters.CharacterDetails
 import com.steliospapamichail.rickandmorty.domain.models.locations.LocationPreview
 import kotlinx.coroutines.Dispatchers

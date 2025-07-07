@@ -2,8 +2,8 @@ package com.steliospapamichail.rickandmorty.ui.screens.episodes.details
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.steliospapamichail.rickandmorty.data.models.common.Resource
-import com.steliospapamichail.rickandmorty.data.repositories.episodes.EpisodeRepository
+import com.steliospapamichail.rickandmorty.data.models.shared.Resource
+import com.steliospapamichail.rickandmorty.domain.repositories.episode.EpisodeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch

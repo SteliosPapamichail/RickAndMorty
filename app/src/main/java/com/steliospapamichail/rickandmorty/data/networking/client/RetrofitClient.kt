@@ -12,7 +12,6 @@ private const val BASE_URL = "https://rickandmortyapi.com/api/"
 private const val READ_TIMEOUT = 45L
 private const val CONNECT_TIMEOUT = 45L
 
-//todo:sp look into the builder pattern or something similar
 class RetrofitClient {
     private lateinit var httpClient: OkHttpClient
     var retrofitClient: Retrofit

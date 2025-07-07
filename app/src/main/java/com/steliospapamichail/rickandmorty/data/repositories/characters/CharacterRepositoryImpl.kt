@@ -2,14 +2,15 @@ package com.steliospapamichail.rickandmorty.data.repositories.characters
 
 import android.util.Log
 import com.steliospapamichail.rickandmorty.data.mappers.toDomainModel
-import com.steliospapamichail.rickandmorty.data.models.common.Resource
+import com.steliospapamichail.rickandmorty.data.models.shared.Resource
 import com.steliospapamichail.rickandmorty.data.sources.local.db.AppDatabase
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.characters.CharacterEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.locations.LocationEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.relationships.CharacterWithLocations
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.CharacterService
 import com.steliospapamichail.rickandmorty.domain.models.characters.CharacterDetails
-import com.steliospapamichail.rickandmorty.exceptions.NetworkRequestException
+import com.steliospapamichail.rickandmorty.domain.repositories.character.CharacterRepository
+import com.steliospapamichail.rickandmorty.domain.exceptions.NetworkRequestException
 import com.steliospapamichail.rickandmorty.utils.DbRecordTTL.RECORD_TTL
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

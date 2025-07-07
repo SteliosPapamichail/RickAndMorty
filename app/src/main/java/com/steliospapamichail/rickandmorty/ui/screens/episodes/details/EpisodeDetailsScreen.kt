@@ -30,8 +30,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.steliospapamichail.rickandmorty.R
 import com.steliospapamichail.rickandmorty.domain.models.episodes.EpisodeDetails
-import com.steliospapamichail.rickandmorty.ui.components.CircularLoader
-import com.steliospapamichail.rickandmorty.ui.components.ErrorSection
+import com.steliospapamichail.rickandmorty.ui.shared.CircularLoader
+import com.steliospapamichail.rickandmorty.ui.shared.ErrorSection
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

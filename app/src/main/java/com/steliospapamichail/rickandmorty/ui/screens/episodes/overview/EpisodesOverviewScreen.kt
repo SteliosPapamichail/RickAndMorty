@@ -38,7 +38,7 @@ import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.itemContentType
 import androidx.paging.compose.itemKey
 import com.steliospapamichail.rickandmorty.R
-import com.steliospapamichail.rickandmorty.ui.components.CircularLoader
+import com.steliospapamichail.rickandmorty.ui.shared.CircularLoader
 import com.steliospapamichail.rickandmorty.ui.screens.episodes.components.EpisodePreviewItem
 import org.koin.androidx.compose.koinViewModel
 

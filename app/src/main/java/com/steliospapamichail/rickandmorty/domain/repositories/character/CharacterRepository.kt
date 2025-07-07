@@ -1,6 +1,6 @@
-package com.steliospapamichail.rickandmorty.data.repositories.characters
+package com.steliospapamichail.rickandmorty.domain.repositories.character
 
-import com.steliospapamichail.rickandmorty.data.models.common.Resource
+import com.steliospapamichail.rickandmorty.data.models.shared.Resource
 import com.steliospapamichail.rickandmorty.domain.models.characters.CharacterDetails
 import kotlinx.coroutines.flow.Flow
 

@@ -3,13 +3,14 @@ package com.steliospapamichail.rickandmorty.data.repositories.episodes
 import android.util.Log
 import androidx.paging.PagingSource
 import com.steliospapamichail.rickandmorty.data.mappers.toDomainModel
-import com.steliospapamichail.rickandmorty.data.models.common.Resource
+import com.steliospapamichail.rickandmorty.data.models.shared.Resource
 import com.steliospapamichail.rickandmorty.data.sources.local.db.AppDatabase
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodeDetailsEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePreviewEntity
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.EpisodeService
 import com.steliospapamichail.rickandmorty.domain.models.episodes.EpisodeDetails
-import com.steliospapamichail.rickandmorty.exceptions.NetworkRequestException
+import com.steliospapamichail.rickandmorty.domain.repositories.episode.EpisodeRepository
+import com.steliospapamichail.rickandmorty.domain.exceptions.NetworkRequestException
 import com.steliospapamichail.rickandmorty.utils.DbRecordTTL.RECORD_TTL
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow

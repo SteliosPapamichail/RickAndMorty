@@ -1,7 +1,8 @@
-package com.steliospapamichail.rickandmorty.domain.exporters
+package com.steliospapamichail.rickandmorty.data.exporters
 
 import android.content.ContentResolver
 import android.net.Uri
+import com.steliospapamichail.rickandmorty.domain.exporters.FileExporter
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.withContext
 import java.io.FileOutputStream

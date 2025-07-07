@@ -1,4 +1,4 @@
-package com.steliospapamichail.rickandmorty.data.models.common
+package com.steliospapamichail.rickandmorty.data.models.shared
 
 /**
  * Represents the various states of a resource,
