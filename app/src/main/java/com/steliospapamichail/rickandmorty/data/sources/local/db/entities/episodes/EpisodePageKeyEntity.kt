@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "episode_page_keys")
-data class EpisodePageKey(
+data class EpisodePageKeyEntity(
     @PrimaryKey val page: Int = 0,
     val nextPage: Int?,
     val prevPage: Int?

@@ -9,7 +9,7 @@ import androidx.room.withTransaction
 import com.steliospapamichail.rickandmorty.data.sources.local.db.AppDatabase
 import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.episodes.EpisodeDao
 import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.episodes.EpisodePageKeysDao
-import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePageKey
+import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePageKeyEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePreviewEntity
 import com.steliospapamichail.rickandmorty.data.sources.remote.api.EpisodeService
 import com.steliospapamichail.rickandmorty.utils.AppDataStore
@@ -57,7 +57,7 @@ class EpisodeRemoteMediator(
                 }
                 episodeDao.insertAll(episodes)
                 episodePageKeysDao.insert(
-                    EpisodePageKey(page = page, nextPage = nextPage, prevPage = prevPage)
+                    EpisodePageKeyEntity(page = page, nextPage = nextPage, prevPage = prevPage)
                 )
                 appDataStore.updateLastRefreshTimestamp(Clock.System.now().toEpochMilliseconds())
             }

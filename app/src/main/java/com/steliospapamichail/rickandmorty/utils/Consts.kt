@@ -12,7 +12,7 @@ object FileExtensions {
 }
 
 object MimeTypes {
-    const val TXT_FILE_MIME_TYPE = "application/txt"
+    const val TXT_FILE_MIME_TYPE = "text/plain"
     const val JSON_FILE_MIME_TYPE = "application/json"
 }
 

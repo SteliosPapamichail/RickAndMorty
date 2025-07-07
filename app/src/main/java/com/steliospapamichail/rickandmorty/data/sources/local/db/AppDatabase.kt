@@ -10,13 +10,13 @@ import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.episodes.E
 import com.steliospapamichail.rickandmorty.data.sources.local.db.daos.locations.LocationDao
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.characters.CharacterEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodeDetailsEntity
-import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePageKey
+import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePageKeyEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.episodes.EpisodePreviewEntity
 import com.steliospapamichail.rickandmorty.data.sources.local.db.entities.locations.LocationEntity
 
 @Database(
     entities = [
-        EpisodePreviewEntity::class, EpisodePageKey::class,
+        EpisodePreviewEntity::class, EpisodePageKeyEntity::class,
         CharacterEntity::class, LocationEntity::class,
         EpisodeDetailsEntity::class,
     ], version = 1,
