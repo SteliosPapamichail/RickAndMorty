@@ -57,8 +57,32 @@ Finally, I leverage `enqueueUniquePeriodicWork()` in order to avoid re-triggerin
 This is a straightforward implementation, where the user can initiate an export request via a button in the character details page. The user is then prompted to select a destination for the file to be saved at, and the use-case leverages the exporter implementation in order to convert the character into a string (see overriden `toString()` method) and subsequently the string into a `ByteArray`, and finally write the bytes to the file.
 
 # Local Room Database
-TODO:SP
-# Unit Tests
-TODO:SP
-# Instrumentation Tests
-TODO:SP
+In terms of persistence, I also tried to strike a good balance between organization, efficiency and pragmatism. Based on that, most entities and DAOs are plain so I'll only focus on the `EpisodePageKeyEntity` , `CharacterEntity` and `CharacterWithLocations` relationship.
+
+## EpisodePageKeyEntity
+This entity is used to keep track of the pages of episodes currently fetched by the user while scrolling the list, along with useful information to be used by the Mediator, such as the next and previous page.
+
+## CharacterEntity
+Since the API returns `location` and `origin` information in each character's details, a relationship was a good way of representing this contract. For this reason, the entity contains two columns (`origin_id` and `location_id`) which are FKs to the table of `LocationEntity`. This relationship is defiend via the `Array<ForeignKey>` in the `@Entity` annotation, tieing the locations table's primaryId with the ids stored in those columns, along with a `SET_NULL` cascade policy, in case the location is deleted locally (not supported here).
+
+## CharacterWithLocations
+This class is the representation of the aforementioned relationship and simply embeds the `CharacterEntity` fields into it along with the related `LocationEntity`s and is used by the `CharacterDao` to automatically combine the related data into this single data class.
+
+# Tests
+Due to time constraints I chose to focus on a small subset of things to test, based on complexity (i.e. ViewModels are simple here), "value-proposition" & architecture.
+## Unit Tests
+Since the first screen the user sees is the list of episodes with a formatted date, I found it appropriate to create unit tests for the `DefaultEpisodeDateFormatter`, in order to test the various happy paths, as well as edge cases, such as exceptions and their effect, leap years, etc.
+
+Similarly I wanted to test the parsing logic for the "last updated at" timestamp via the `TimestampFormatterUnitTest` class. This class also covers cases such as null input, epoch zero and of course the happy path.
+
+Lastly, I created the `ExportUseCaseUnitTest` as a form of a more "complex" test, that can guarantee that exports of character details will work as expected when the users need them the most! To ease the process of creating test-doubles and mocking functionality, I leveraged the `Mockk` library. By mocking the exporter, I get full control on what to return on any method access of interest (export in this case) and combining that with `mockkStatic` for the `Uri` class, I managed to achieve independence from the "actual" Android libraries (which in unit tests are "empty") and successfully gain control of the export flow.
+
+With this setup, I added tests to cover the happy path case and the various exceptions that can be thrown by the exporter's export method.
+## Instrumentation Tests
+For the reasons mentioned earlier, I ended up only implementing a single integration test, so I chose `DocumentExporterInstrumentedTest` to complement my `ExportUseCaseUnitTest`. Since the exporter's functionality depends on the android framework, instrumented tests seemed like the way to go here. Leveraging the `@Before` annotation, I set up important variables necessary for the test cases, such as the `ContentResolver` and the `DocumentExporter` instance. Finally, using temporary files and a dummy character model, I added tests for the happy path case, as well as for the exceptions thrown due to I/O issues, file permissions or non-existent files.
+
+### Improvements
+Personally, I would have liked to add some UI tests such as for confirming element visiblity (i.e. export button), navigation flow tests and repository implementation tests (i.e. integration tests for the episode repository and unit for the character one since it's independent of the android framework).
+
+# Dependency Injection
+I personally prefer Koin due to its simplicity, DX & lack of annotations required (see Hilt), and I have the most experience with it, so I opted to use it in this project. Due to the small size of the project I only used a single KoinModule for everything and used named dependencies in order to inject CoroutineDispatchers to support testability.
